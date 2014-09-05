@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(value= RetentionPolicy.RUNTIME)
 public @interface ViewById {
-    int value() default 0;
+    int value();
 }

@@ -16,7 +16,7 @@ import com.pocketdigi.PLib.annotation.ViewInjector;
  */
 public abstract class PFragment extends Fragment{
     /**用于解析注解时保存Layout的id**/
-    private int mLayoutId=0;
+    public int mLayoutId=0;
     View rootView;
     /**返回onCreateView缓存的rootView**/
     public final View getRootView(){

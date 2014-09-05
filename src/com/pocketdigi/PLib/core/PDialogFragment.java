@@ -1,8 +1,9 @@
 package com.pocketdigi.PLib.core;
 
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,10 @@ import com.pocketdigi.PLib.annotation.InjectAdapter;
 import com.pocketdigi.PLib.annotation.ViewInjector;
 
 /**
- * 支持Injector
- * onCreateView返回的View必须缓存,再次调用不要重新inflat，View注入需要
- * Created by fhp on 14-9-1.
+ * DialogFragment基类
+ * Created by fhp on 14-9-5.
  */
-public abstract class PFragment extends Fragment{
+public class PDialogFragment extends DialogFragment {
     /**用于解析注解时保存Layout的id**/
     private int mLayoutId=0;
     View rootView;

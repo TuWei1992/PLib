@@ -78,4 +78,36 @@ public class PLog {
         return 0;
     }
 
+    public static int e(Object obj,String msg)
+    {
+        if (BuildConfig.DEBUG)
+            return Log.e(obj.getClass().getSimpleName(),msg);
+        return 0;
+    }
+    public static int d(Object obj,String msg)
+    {
+        if (BuildConfig.DEBUG)
+            return Log.d(obj.getClass().getSimpleName(),msg);
+        return 0;
+    }
+    public static int v(Object obj,String msg)
+    {
+        if (BuildConfig.DEBUG)
+            return Log.v(obj.getClass().getSimpleName(),msg);
+        return 0;
+    }
+    public static int w(Object obj,String msg)
+    {
+        if (BuildConfig.DEBUG)
+            return Log.w(obj.getClass().getSimpleName(),msg);
+        return 0;
+    }
+    public static int d(Object obj,Object msgObj)
+    {
+        if (BuildConfig.DEBUG)
+            return Log.d(obj.getClass().getSimpleName(),msgObj.toString());
+        return 0;
+    }
+
+
 }

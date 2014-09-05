@@ -81,7 +81,7 @@ public class ViewInjector {
         if(aClass.isAnnotationPresent(Inflat.class))
         {
            Inflat inflat= (Inflat) aClass.getAnnotation(Inflat.class);
-           int layoutId=inflat.layoutId();
+           int layoutId=inflat.value();
            if(layoutId==0)
                 throw new InflatError("You must set a Inflat annotation for this activity or fragment");
             adapter.inflatLayout(obj,layoutId);

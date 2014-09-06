@@ -13,10 +13,8 @@ PLib是一个Android应用开发库，集成了流行的开源库，整合一些
 1.View注入
 
 
-
-
 使用方法：
-----
+-----
 PLib是一个Library项目，将它引入到你的项目中，Application继承PApplication,所有Activity继承PActivity或PFragmentActivity,所有Fragment继承PFragment或PDialogFragment.
 
 

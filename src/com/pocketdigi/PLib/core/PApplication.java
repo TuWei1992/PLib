@@ -3,6 +3,7 @@ package com.pocketdigi.PLib.core;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
+import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 
@@ -72,5 +73,18 @@ public abstract class PApplication extends Application{
             service.stopSelf();
         }
         services.clear();
+    }
+
+    /**
+     * 注册事件接收者，封装是为了以后使用其他事件总线
+     * @param obj
+     */
+    public void registerEventSubscriber(Object obj)
+    {
+        EventBus.getDefault().register(obj);
+    }
+    public void unRegisterEventSubscriber(Object obj)
+    {
+        EventBus.getDefault().unregister(obj);
     }
 }

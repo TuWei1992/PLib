@@ -2,6 +2,7 @@ package com.pocketdigi.PLib.core;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.StringRes;
 import android.widget.Toast;
 
 /**
@@ -10,7 +11,7 @@ import android.widget.Toast;
  */
 public class PToast {
 
-    public static void show(final int resId)
+    public static void show(@StringRes final int resId)
     {
         if(!isMainThread())
         {

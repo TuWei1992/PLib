@@ -87,4 +87,8 @@ public abstract class PApplication extends Application{
     {
         EventBus.getDefault().unregister(obj);
     }
+    public void postEvent(PEvent event)
+    {
+        EventBus.getDefault().post(event);
+    }
 }

@@ -10,8 +10,13 @@ import java.lang.reflect.Field;
  */
 public class PFragmentInjectAdapter extends InjectAdapter{
     @Override
-    public Object findFieldValue(Object obj, int resId) {
+    public Object findViewValue(Object obj, int resId) {
         return ((PFragment)obj).getRootView().findViewById(resId);
+    }
+
+    @Override
+    public Object findFragmentValue(Object obj, int resId) {
+        return ((PFragment)obj).getFragmentManager().findFragmentById(resId);
     }
 
     @Override

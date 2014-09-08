@@ -23,6 +23,7 @@ public class PDialogFragment extends DialogFragment {
         return rootView;
     }
     InjectAdapter injectAdapter;
+    boolean isFirstCreate=true;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +42,17 @@ public class PDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewInjector.findViewById(this,injectAdapter);
+        if(isFirstCreate){
+            ViewInjector.findViewById(this,injectAdapter);
+            isFirstCreate=false;
+        }
+        registerListenerOrReceiver();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unregisterListerOrReceiver();
     }
 
     @Override
@@ -49,4 +60,11 @@ public class PDialogFragment extends DialogFragment {
         super.onDestroy();
         ((ViewGroup)rootView.getParent()).removeView(rootView);
     }
+
+    /**
+     * 注册监听器以及接收器(包括Event),在Fragment被隐藏或销毁时，会调用unregisterListerOrReceiver
+     */
+    protected void registerListenerOrReceiver(){};
+    /**解注册监听器及接收器(包括Event)**/
+    protected void unregisterListerOrReceiver(){};
 }

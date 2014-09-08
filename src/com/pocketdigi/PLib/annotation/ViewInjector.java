@@ -1,6 +1,7 @@
 package com.pocketdigi.PLib.annotation;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import com.pocketdigi.PLib.core.*;
 import com.pocketdigi.PLib.exception.FindViewError;
@@ -60,13 +61,29 @@ public class ViewInjector {
                         throw new FindViewError(field);
                     }
                     try {
-                        field.set(obj,adapter.findFieldValue(obj,resId));
+                        field.set(obj,adapter.findViewValue(obj, resId));
                     } catch (IllegalAccessException e) {
                         PLog.e("ViewInjector","FindView Error for "+field);
                         e.printStackTrace();
                     }
                 }
 
+            }else if(Fragment.class.isAssignableFrom(field.getType())||android.app.Fragment.class.isAssignableFrom(field.getType())){
+                //两种Fragment
+                if(field.isAnnotationPresent(FragmentById.class)){
+                    FragmentById fragmentById=field.getAnnotation(FragmentById.class);
+                    int resId=fragmentById.value();
+                    if(resId==0)
+                    {
+                        throw new FindViewError(field);
+                    }
+                    try {
+                        field.set(obj,adapter.findFragmentValue(obj,resId));
+                    } catch (IllegalAccessException e) {
+                        PLog.e("ViewInjector","Find Fragment Error for "+field);
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }

@@ -83,7 +83,7 @@ public abstract class PApplication extends Application{
     {
         EventBus.getDefault().register(obj);
     }
-    public void unRegisterEventSubscriber(Object obj)
+    public void unregisterEventSubscriber(Object obj)
     {
         EventBus.getDefault().unregister(obj);
     }

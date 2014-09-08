@@ -3,6 +3,7 @@ package com.pocketdigi.PLib.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -264,6 +265,170 @@ public class ImageUtil {
 
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
         return (bitmap);
+    }
+
+
+    /**
+     * 从文件解析出图片，可以是缩略图
+     *
+     * @param filePath
+     *            　文件路径
+     * @param inSampleSize
+     *            　缩小系数，1为原图,如果是2,宽高均为原图的1/2,类推
+     * @return
+     */
+    public static Bitmap decodeFromFile(String filePath, int inSampleSize) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = inSampleSize;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
+        return bitmap;
+    }
+
+    /**
+     * 通过最大高宽度计算SampleSize
+     *
+     * @param filePath
+     * @param maxWidth
+     * @param maxHeight
+     * @return
+     */
+    private static int getSampleSizeFromFile(String filePath, int maxWidth, int maxHeight) {
+        // 计算图片的真实尺寸，但不读出图片
+        int[] size = getBitmapSize(filePath);
+        float realWidth = size[0];
+        float realHeight = size[1];
+
+        // 如果图片尺寸比最大值小，直接返回
+        if (maxWidth > realWidth && maxHeight > realHeight) {
+            return 1;
+        }
+        // 计算宽高比
+        float target_ratio = (float) maxWidth / maxHeight;
+        float real_ratio = realWidth / realHeight;
+        int inSampleSize = 1;
+        if (real_ratio > target_ratio) {
+            // 如果width太大，height太小，以width为基准，把realWidth设为maxWidth,realHeight缩放
+            inSampleSize = (int) realWidth / maxWidth;
+        } else {
+            inSampleSize = (int) realHeight / maxHeight;
+        }
+        return inSampleSize;
+    }
+
+    /**
+     * 通过最大高宽度计算SampleSize
+     * @param maxWidth
+     * @param maxHeight
+     * @return
+     */
+    private static int getSampleSizeFromResource(Context context, int resId, int maxWidth, int maxHeight) {
+        // 计算图片的真实尺寸，但不读出图片
+        int[] size = getBitmapSize(context, resId);
+        return getSampleSize(size, maxWidth, maxHeight);
+    }
+
+    /**
+     * 计算真实尺寸
+     *
+     * @param bmpSize
+     * @param maxWidth
+     * @param maxHeight
+     * @return
+     */
+    private static int getSampleSize(int[] bmpSize, int maxWidth, int maxHeight) {
+        float realWidth = bmpSize[0];
+        float realHeight = bmpSize[1];
+        // 如果图片尺寸比最大值小，直接返回
+        if (maxWidth > realWidth && maxHeight > realHeight) {
+            return 1;
+        }
+        // 计算宽高比
+        float target_ratio = (float) maxWidth / maxHeight;
+        float real_ratio = realWidth / realHeight;
+        int inSampleSize = 1;
+        if (real_ratio > target_ratio) {
+            // 如果width太大，height太小，以width为基准，把realWidth设为maxWidth,realHeight缩放
+            inSampleSize = (int) realWidth / maxWidth;
+        } else {
+            inSampleSize = (int) realHeight / maxHeight;
+        }
+        return inSampleSize;
+    }
+
+    /**
+     * 从文件解析出图片，可以是缩略图
+     *
+     * @param filePath
+     * @param maxWidth
+     *            缩略图最大宽度
+     * @param maxHeight
+     *            　缩略图最大高度
+     * @return
+     */
+    public static Bitmap decodeFromFile(String filePath, int maxWidth, int maxHeight) {
+        int inSampleSize = getSampleSizeFromFile(filePath, maxWidth, maxHeight);
+        return decodeFromFile(filePath, inSampleSize);
+    }
+
+    /**
+     * 从ResourceID 解析图片
+     *
+     * @param context
+     * @param resId
+     * @param maxWidth
+     * @param maxHeight
+     * @return
+     */
+    public static Bitmap decodeFromResource(Context context, int resId, int maxWidth, int maxHeight) {
+        // 计算图片的真实尺寸，但不读出图片
+        int inSampleSize = getSampleSizeFromResource(context, resId, maxWidth, maxHeight);
+        return decodeFromResource(context, resId, inSampleSize);
+    }
+
+    /**
+     * 从ResourceID 解析图片
+     *
+     * @param context
+     * @param resId
+     * @param inSampleSize
+     * @return
+     */
+    public static Bitmap decodeFromResource(Context context, int resId, int inSampleSize) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = inSampleSize;
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
+        return bitmap;
+    }
+
+    /**
+     * 获取图片的尺寸,不会真正读取,省资源
+     *
+     * @param context
+     * @param resId
+     */
+    public static int[] getBitmapSize(Context context, int resId) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(context.getResources(), resId, options);
+        int[] size = new int[2];
+        size[0] = options.outWidth;
+        size[1] = options.outHeight;
+        return size;
+    }
+
+    /**
+     * 获取图片的尺寸,不会真正读取,省资源
+     */
+    public static int[] getBitmapSize(String jpgPath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(jpgPath, options);
+        int[] size = new int[2];
+        size[0] = options.outWidth;
+        size[1] = options.outHeight;
+        return size;
     }
 
 }

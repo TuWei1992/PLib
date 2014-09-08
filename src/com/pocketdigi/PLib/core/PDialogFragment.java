@@ -28,6 +28,8 @@ public class PDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectAdapter=ViewInjector.inject(this);
+        setShowsDialog(true);
+        setStyle(DialogFragment.STYLE_NO_TITLE,0);
     }
 
     @Override

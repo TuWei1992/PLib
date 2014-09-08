@@ -37,8 +37,7 @@ public class DateUtils {
 		return sdf.format(date);
 
 	}
-	
-	
+
 	/**
 	 * 把间隔时间转换成时间形式
 	 * @param duration 毫秒

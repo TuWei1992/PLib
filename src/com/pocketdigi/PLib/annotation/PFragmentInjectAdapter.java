@@ -1,5 +1,7 @@
 package com.pocketdigi.PLib.annotation;
 
+import android.support.v4.app.Fragment;
+import com.pocketdigi.PLib.core.PDialogFragment;
 import com.pocketdigi.PLib.core.PFragment;
 import com.pocketdigi.PLib.exception.InflatError;
 
@@ -11,12 +13,16 @@ import java.lang.reflect.Field;
 public class PFragmentInjectAdapter extends InjectAdapter{
     @Override
     public Object findViewValue(Object obj, int resId) {
-        return ((PFragment)obj).getRootView().findViewById(resId);
+        if(PFragment.class.isAssignableFrom(obj.getClass()))
+            return ((PFragment)obj).getRootView().findViewById(resId);
+        else if(PDialogFragment.class.isAssignableFrom(obj.getClass()))
+            return ((PDialogFragment)obj).getRootView().findViewById(resId);
+        return null;
     }
 
     @Override
     public Object findFragmentValue(Object obj, int resId) {
-        return ((PFragment)obj).getFragmentManager().findFragmentById(resId);
+        return ((Fragment)obj).getFragmentManager().findFragmentById(resId);
     }
 
     @Override

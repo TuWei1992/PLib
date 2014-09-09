@@ -11,10 +11,10 @@ PLib是一个Android应用开发库，集成了流行的开源库，整合一些
 功能:
 -------------
 1.View及Fragment（只能用V4)注入<br />
-2.SharedPreference封装
-3.Toast封装
-4.Log封装
-5.其他一些常用Utils(md5,DES,日期处理,字符串处理,图片处理,网络判断,首次运行检测等)
+2.SharedPreference封装<br />
+3.Toast封装<br />
+4.Log封装<br />
+5.其他一些常用Utils(md5,DES,日期处理,字符串处理,图片处理,网络判断,首次运行检测等)<br />
 
 
 使用方法：

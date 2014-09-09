@@ -64,6 +64,7 @@ public abstract class PApplication extends Application{
     {
         destoryAllActivity();
         destoryAllService();
+        System.exit(0);
     }
 
     public void destoryAllService()

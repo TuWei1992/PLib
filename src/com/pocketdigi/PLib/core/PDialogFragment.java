@@ -69,4 +69,5 @@ public class PDialogFragment extends DialogFragment {
     protected void registerListenerOrReceiver(){};
     /**解注册监听器及接收器(包括Event)**/
     protected void unregisterListerOrReceiver(){};
+
 }

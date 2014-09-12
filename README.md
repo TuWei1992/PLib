@@ -24,7 +24,7 @@ PLib是一个Library项目，将它引入到你的项目中，Application继承P
 
 **1.View及Fragment注入**<br />
 在Activity类或Fragment类加上Inflat注解，value是layoutId，如<br />
-@Inflat(R.layout.main)<br />
+@Inflat(R.layout.main)<br />，
 所有View字段加上ViewById注解，如<br />
 @ViewById(R.id.layout_drawer)<br />
 DrawerLayout layout_drawer;<br />

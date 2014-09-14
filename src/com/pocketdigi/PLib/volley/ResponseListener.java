@@ -1,12 +1,13 @@
 package com.pocketdigi.PLib.volley;
 
-import com.android.volley.VolleyError;
-
 /**
  * Created by fhp on 14-9-12.
  */
-public interface ResponseListener<T> {
-    public void onSuccess(T response);
-    public void onDeliverError(VolleyError error);
-    public void onNetWorkError(VolleyError error);
+public interface ResponseListener{
+    /**成功**/
+    public void onSuccess(Object response);
+    /**服务器错误**/
+    public void onServerError();
+    /**网络错误**/
+    public void onNetWorkError();
 }

@@ -52,7 +52,7 @@ public class VolleyHelper {
         if (NetWorkUtil.isNetConnected()) {
             Request<String> request= queue.add(new StringRequest(url, new Response.Listener<String>() {
                 @Override
-                public void onResponse(String response) {
+                public void onResponse(String response,boolean isFromCache) {
                     PLog.d(this," Request "+url+" success \n "+response);
                     Gson gson = new Gson();
                     WeakReference<ResponseListener> wr = listenerHashMap.get(url);
@@ -61,8 +61,9 @@ public class VolleyHelper {
                         if (responseListener != null) {
                             try {
                                 Object obj = gson.fromJson(response, clazz);
-                                responseListener.onSuccess(obj);
+                                responseListener.onSuccess(obj,isFromCache);
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 responseListener.onServerError();
                             }
                         }

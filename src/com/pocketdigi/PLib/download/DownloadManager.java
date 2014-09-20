@@ -18,24 +18,27 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DownloadManager implements DownloadListener {
     private static DownloadManager instance;
-    BlockingQueue<Runnable> mDownWorkQueue = new LinkedBlockingQueue<Runnable>();
+    BlockingQueue<Runnable> mDownWorkQueue;
     int corePoolSize = 1;
     int maximumPoolSize = 2;
     AtomicInteger atomicInteger = new AtomicInteger();
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 0L, TimeUnit.MILLISECONDS, mDownWorkQueue);
-    HashSet<DownloadListener> listeners = new HashSet<DownloadListener>();
-    ArrayList<DownTask> taskList = new ArrayList<DownTask>();
+    ThreadPoolExecutor executor;
+    HashSet<DownloadListener> listeners;
+    ArrayList<DownTask> taskList;
     private int timeout = 5000;
-    String storageInsufficientNotice;
     boolean isFirstFailure = true;
 
     public static DownloadManager getInstance() {
-        if (instance != null)
+        if (instance == null)
             instance = new DownloadManager();
         return instance;
     }
 
     private DownloadManager() {
+        listeners = new HashSet<DownloadListener>();
+        taskList = new ArrayList<DownTask>();
+        mDownWorkQueue = new LinkedBlockingQueue<Runnable>();
+        executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 60L, TimeUnit.SECONDS, mDownWorkQueue);
     }
 
     public DownTask addTask(DownTask task) {
@@ -131,28 +134,11 @@ public class DownloadManager implements DownloadListener {
         this.timeout = timeout;
     }
 
-    /**
-     * 存储空间少于50M时的提示，当少于50M时不可下载
-     *
-     * @return
-     */
-    public String getStorageInsufficientNotice() {
-        return storageInsufficientNotice;
-    }
-
-    /**
-     * 存储空间少于50M时的提示，当少于50M时不可下载
-     */
-    public void setStorageInsufficientNotice(String storageInsufficientNotice) {
-        this.storageInsufficientNotice = storageInsufficientNotice;
-    }
-
     public void cancelAllTasks() {
         for (DownTask task : taskList) {
             task.cancel();
         }
     }
-
 
 
     public void destory() {

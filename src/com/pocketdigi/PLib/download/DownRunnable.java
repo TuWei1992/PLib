@@ -2,6 +2,7 @@ package com.pocketdigi.PLib.download;
 
 import android.os.Handler;
 import android.os.Looper;
+import com.pocketdigi.PLib.core.PLog;
 import com.pocketdigi.PLib.util.FileUtils;
 import com.pocketdigi.PLib.util.StorageUtils;
 
@@ -41,7 +42,8 @@ public class DownRunnable implements Runnable {
             taskFailure(DownloadListener.ERROR_CODE_DISK_FULL);
             return;
         }
-
+        PLog.d(this,"下载文件"+task.getUrl());
+        PLog.d(this,"保存到"+tmpFilePath);
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         FileOutputStream fileOutputStream = null;
@@ -70,9 +72,11 @@ public class DownRunnable implements Runnable {
 
             }
             if (task.isCancel()) {
+                PLog.d(this,"下载取消"+task.getUrl());
                 taskCancel();
                 return;
             } else {
+                PLog.d(this,"下载成功"+task.getUrl());
                 taskSuccess();
                 return;
             }
@@ -107,6 +111,7 @@ public class DownRunnable implements Runnable {
 
     private void taskFailure(final int errorCode) {
         FileUtils.deleteFile(tmpFilePath);
+        PLog.d(this,"下载失败"+task.getUrl()+" 错误代码 "+errorCode);
         handler.post(new Runnable() {
             @Override
             public void run() {

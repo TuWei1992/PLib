@@ -123,15 +123,26 @@ public class FileUtils {
 	}
 
 	/**
-	 * 删除文件
+	 * 删除文件或目录，会清空目录下所有文件
 	 * 
 	 * @param filePath
 	 */
 	public static void deleteFile(String filePath) {
 		File file = new File(filePath);
-		if (file.exists()) {
-			file.delete();
-		}
+        if(file.exists())
+        {
+            if(file.isDirectory())
+            {
+                File[] files=file.listFiles();
+                for (File file1:files)
+                {
+                    deleteFile(file1.getAbsolutePath());
+                }
+            }else{
+                file.delete();
+            }
+        }
+
 	}
 
 	/**
@@ -160,7 +171,7 @@ public class FileUtils {
 	}
 	/**
 	 * 重命名文件(移动文件)
-	 * @param tempPath
+	 * @param oldPath
 	 * @param newPath
 	 */
 	public static boolean rename(String oldPath, String newPath) {

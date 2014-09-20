@@ -2,7 +2,10 @@ package com.pocketdigi.PLib.download;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -13,37 +16,42 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 所以，需要调用者在Service中，getTaskList(),addListener(),再根据listener的回调，修改下载数据库
  * Created by fhp on 14-9-16.
  */
-public class DownloadManager implements DownloadListener{
+public class DownloadManager implements DownloadListener {
     private static DownloadManager instance;
     BlockingQueue<Runnable> mDownWorkQueue = new LinkedBlockingQueue<Runnable>();
-    int corePoolSize=1;
-    int maximumPoolSize=2;
-    AtomicInteger atomicInteger=new AtomicInteger();
-    ExecutorService executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 0L, TimeUnit.MILLISECONDS, mDownWorkQueue);
-    HashSet<DownloadListener> listeners=new HashSet<DownloadListener>();
-    ArrayList<DownTask> taskList=new ArrayList<DownTask>();
-    private int timeout=5000;
+    int corePoolSize = 1;
+    int maximumPoolSize = 2;
+    AtomicInteger atomicInteger = new AtomicInteger();
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 0L, TimeUnit.MILLISECONDS, mDownWorkQueue);
+    HashSet<DownloadListener> listeners = new HashSet<DownloadListener>();
+    ArrayList<DownTask> taskList = new ArrayList<DownTask>();
+    private int timeout = 5000;
+    String storageInsufficientNotice;
+    boolean isFirstFailure = true;
 
-    public static DownloadManager getInstance()
-    {
-        if(instance!=null)
-            instance=new DownloadManager();
+    public static DownloadManager getInstance() {
+        if (instance != null)
+            instance = new DownloadManager();
         return instance;
     }
 
-    private DownloadManager()
-    {
+    private DownloadManager() {
     }
 
-    public DownTask addTask(DownTask task)
-    {
+    public DownTask addTask(DownTask task) {
+        //判断任务是否存在
+        int taskIndex;
+        if ((taskIndex = taskList.indexOf(task)) > -1) {
+            //存在
+            return taskList.get(taskIndex);
+        }
+
         task.setState(DownTask.STATE_WAITING);
         task.setId(atomicInteger.incrementAndGet());
-        DownRunnable runnable=new DownRunnable(task,this);
-        if(task.isBlock())
-        {
+        DownRunnable runnable = new DownRunnable(task, this);
+        if (task.isBlock()) {
             executor.submit(runnable);
-        }else{
+        } else {
             new Thread(runnable).start();
         }
         taskList.add(task);
@@ -56,57 +64,53 @@ public class DownloadManager implements DownloadListener{
 
     /**
      * 注册监听器
+     *
      * @param listener
      */
-    public void addListener(DownloadListener listener)
-    {
+    public void addListener(DownloadListener listener) {
         listeners.add(listener);
     }
 
     /**
      * 移除监听器
+     *
      * @param listener
      */
-    public void removeListener(DownloadListener listener)
-    {
+    public void removeListener(DownloadListener listener) {
         listeners.remove(listener);
     }
 
-    public void removeAllListener()
-    {
+    public void removeAllListener() {
         listeners.clear();
     }
 
     @Override
     public void onStart(DownTask task) {
-        for(DownloadListener listener:listeners)
-        {
+        for (DownloadListener listener : listeners) {
             listener.onStart(task);
         }
     }
 
     @Override
     public void onProgressChanged(DownTask task) {
-        for(DownloadListener listener:listeners)
-        {
+        for (DownloadListener listener : listeners) {
             listener.onProgressChanged(task);
         }
     }
 
     @Override
-    public void onFail(DownTask task) {
+    public void onFail(DownTask task, int errorCode) {
         taskList.remove(task);
-        for(DownloadListener listener:listeners)
-        {
-            listener.onFail(task);
+        for (DownloadListener listener : listeners) {
+            listener.onFail(task, errorCode);
         }
     }
 
     @Override
     public void onComplete(DownTask task) {
         taskList.remove(task);
-        for(DownloadListener listener:listeners)
-        {
+        isFirstFailure = false;
+        for (DownloadListener listener : listeners) {
             listener.onComplete(task);
         }
     }
@@ -114,9 +118,8 @@ public class DownloadManager implements DownloadListener{
     @Override
     public void onCancel(DownTask task) {
         taskList.remove(task);
-        for(DownloadListener listener:listeners)
-        {
-           listener.onCancel(task);
+        for (DownloadListener listener : listeners) {
+            listener.onCancel(task);
         }
     }
 
@@ -128,21 +131,36 @@ public class DownloadManager implements DownloadListener{
         this.timeout = timeout;
     }
 
-    public void cancelAllTasks()
-    {
-        for(DownTask task:taskList)
-        {
+    /**
+     * 存储空间少于50M时的提示，当少于50M时不可下载
+     *
+     * @return
+     */
+    public String getStorageInsufficientNotice() {
+        return storageInsufficientNotice;
+    }
+
+    /**
+     * 存储空间少于50M时的提示，当少于50M时不可下载
+     */
+    public void setStorageInsufficientNotice(String storageInsufficientNotice) {
+        this.storageInsufficientNotice = storageInsufficientNotice;
+    }
+
+    public void cancelAllTasks() {
+        for (DownTask task : taskList) {
             task.cancel();
         }
     }
 
-    public void destory()
-    {
+
+
+    public void destory() {
         cancelAllTasks();
         executor.shutdownNow();
         taskList.clear();
         removeAllListener();
-        instance=null;
+        instance = null;
 
     }
 }

@@ -96,6 +96,8 @@ public class DownTask {
             DownTask other=(DownTask)o;
             if(other.getId()==this.getId())
                 return true;
+            if(other.getUrl().equals(this.getUrl()))
+                return true;
         }
         return false;
     }

@@ -19,7 +19,7 @@ public class ImageUtil {
 
     /**
      * Android api 17实现的虚化
-     *
+     * 某些机型上可能会Crash
      * @param context
      * @param sentBitmap
      * @param radius 大于1小于等于25

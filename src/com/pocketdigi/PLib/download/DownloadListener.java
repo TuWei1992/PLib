@@ -15,7 +15,6 @@ public interface DownloadListener {
     /**任务取消**/
     public void onCancel(DownTask task);
 
-    public static final int ERROR_CODE_NETWORK=1;
     public static final int ERROR_CODE_IO=2;
     public static final int ERROR_CODE_DISK_FULL=3;
     public static final int ERROR_CODE_OTHER=4;

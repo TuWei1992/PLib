@@ -21,6 +21,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.pocketdigi.PLib.volley.AlwaysCacheHttpHeaderParser;
 
 import java.io.UnsupportedEncodingException;
 
@@ -68,6 +69,6 @@ public class StringRequest extends Request<String> {
         } catch (UnsupportedEncodingException e) {
             parsed = new String(response.data);
         }
-        return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response),response.notModified);
+        return Response.success(parsed, AlwaysCacheHttpHeaderParser.parseCacheHeaders(response),response.notModified);
     }
 }

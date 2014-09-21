@@ -121,6 +121,7 @@ public class CacheDispatcher extends Thread {
 
                 if (!entry.refreshNeeded()) {
                     // Completely unexpired cache hit. Just deliver the response.
+                    response.isFromCache=true;
                     mDelivery.postResponse(request, response);
                 } else {
                     // Soft-expired cache hit. We can deliver the cached response,

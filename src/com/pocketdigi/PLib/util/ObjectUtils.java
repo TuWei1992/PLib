@@ -25,7 +25,9 @@ public class ObjectUtils {
             try {
                 Object child = childClass.newInstance();
                 for (Field field : parentFields) {
+                    field.setAccessible(true);
                     Field childField = childClass.getSuperclass().getDeclaredField(field.getName());
+                    childField.setAccessible(true);
                     childField.set(child, field.get(parent));
                 }
                 return child;

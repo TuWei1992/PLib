@@ -1,5 +1,7 @@
 package com.pocketdigi.PLib.download;
 
+import com.pocketdigi.PLib.core.PLog;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.BlockingQueue;
@@ -42,6 +44,7 @@ public class DownloadManager implements DownloadListener {
     }
 
     public DownTask addTask(DownTask task) {
+        PLog.d(this,"添加下载任务"+task.getUrl());
         //判断任务是否存在
         int taskIndex;
         if ((taskIndex = taskList.indexOf(task)) > -1) {
